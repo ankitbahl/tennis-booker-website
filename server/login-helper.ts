@@ -28,7 +28,8 @@ const getEmail = async (accessToken: string) => {
 }
 
 export const login = async (req: Request, authCode: string) => {
-  const baseUrl = `${req.protocol}://${req.get('host')}`;
+  const host = req.get('host');
+  const baseUrl = `${req.hostname.includes('localhost') ? 'http' : 'https'}://${host}`;
   const tokens = await getTokens(baseUrl, authCode);
   const email = await getEmail(tokens.access_token);
   await storeToken(email, tokens.refresh_token);
