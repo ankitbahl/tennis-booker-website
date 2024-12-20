@@ -30,7 +30,7 @@ const authenticateRequest = async (req: Request, res: Response): Promise<boolean
 app.post('/login', async (req, res) => {
     try {
         if (req.query?.authcode) {
-            const loginResponse = await login(req.query.authcode as string);
+            const loginResponse = await login(req, req.query.authcode as string);
             res.json(loginResponse);
         } else {
             throw new Error();
