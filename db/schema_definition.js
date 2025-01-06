@@ -1,5 +1,9 @@
 // SCHEMA
 let schema = {
+
+  booking_users: [
+    "user@gmail.com", "user2@gmail.com"
+  ],
   // bookings for week starting with dec 2 (monday)
   bookings_12_02: [
     {
@@ -28,6 +32,9 @@ let schema = {
   // valid access token
   "user@gmail.com": {
     refresh_token: "2313jdd0j3d23d",
-  }
+  },
+
+  // rec us password
+  "user@gmail.com_rec_password": "123456"
 
 }

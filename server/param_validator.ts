@@ -26,22 +26,22 @@ export const validateDefaultBookings =  (req: Request, res: Response): boolean =
     const items = body.items;
 
     if (items.length > 3) {
-        res.status(400);
+        res.sendStatus(400);
         return false;
     }
     for(const item of items) {
         if (!weekdays.includes(item.day)) {
-            res.status(400);
+            res.sendStatus(400);
             return false;
         }
 
         if (!timeRegex.test(item.time)) {
-            res.status(400);
+            res.sendStatus(400);
             return false;
         }
 
-        if (courts.includes(item.court)) {
-            res.status(400);
+        if (!courts.includes(item.court)) {
+            res.sendStatus(400);
             return false;
         }
     }

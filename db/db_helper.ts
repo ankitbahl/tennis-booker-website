@@ -1,6 +1,6 @@
-import {createClient, RedisClientType} from 'redis';
+import { createClient, RedisClientType } from 'redis';
 import { lookup } from 'dns';
-import {Weekday} from "../server/definitions";
+import { Weekday } from "../server/definitions";
 
 const isDocker = async () => {
   return new Promise(resolve =>
@@ -53,6 +53,11 @@ export const getDefaultWeekBookings = async (email: string): Promise<{day: strin
 
 export const storeToken = async (email: string, token: string) => {
   await DBHelper.redisClient.set(email, JSON.stringify({refresh_token: token}));
+  const existingUsers: string[] = JSON.parse(await DBHelper.redisClient.get('booking_users') || "[]");
+  if (!existingUsers.includes(email)) {
+    existingUsers.push(email);
+    await DBHelper.redisClient.set('booking_users', JSON.stringify(existingUsers));
+  }
 }
 
 export const validateToken = async (email: string, token: string): Promise<boolean> => {
@@ -64,6 +69,13 @@ export const setDefaultWeekBookings = async (email: string, defaultWeekBookings:
   await DBHelper.redisClient.set('default_week_bookings', JSON.stringify({...JSON.parse(storedBookings || "{}"), [email]: defaultWeekBookings}));
 };
 
+export const getRecPassword = async (email: string): Promise<string | null> => {
+  return DBHelper.redisClient.get(`${email}_rec_password`);
+}
+
+export const setRecPassword = async (email: string, password: string)=> {
+  await DBHelper.redisClient.set(`${email}_rec_password`, password);
+}
 // const validateBookingArgs = (date: string, time: string, court: string): boolean => {
 //   const parsedDate = new Date(date);
 //   const courts: string[] = [];

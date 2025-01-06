@@ -3,7 +3,13 @@ import cors from 'cors';
 import path from 'path';
 import {fileURLToPath} from 'url';
 import {authenticate, login} from "./server/login-helper.js";
-import {DBHelper, getDefaultWeekBookings, setDefaultWeekBookings} from "./db/db_helper.js";
+import {
+    DBHelper,
+    getDefaultWeekBookings,
+    getRecPassword,
+    setDefaultWeekBookings,
+    setRecPassword
+} from "./db/db_helper.js";
 import {validateDefaultBookings} from "./server/param_validator.js";
 import {Weekday} from "./server/definitions.js";
 
@@ -20,7 +26,7 @@ app.get('/', (req, res) => {
 const authenticateRequest = async (req: Request, res: Response): Promise<boolean> => {
     const authValid = await authenticate(req.header('email') || 'N/A', req.header('token') || 'N/A');
     if (!authValid) {
-        res.status(401);
+        res.sendStatus(401);
         return false;
     }
 
@@ -38,7 +44,7 @@ app.post('/login', async (req, res) => {
     } catch (e) {
         console.log('Failed to authenticate');
         console.error(e);
-        res.status(400);
+        res.sendStatus(400);
     }
 });
 
@@ -53,7 +59,7 @@ app.post('/default-week-bookings', async (req, res) => {
 
     const defaultWeekBookings = req.body as { items: {day: Weekday, time: string, court: string}[] };
     await setDefaultWeekBookings(req.header('email') as string, defaultWeekBookings.items);
-    res.status(200);
+    res.sendStatus(200);
 });
 
 app.get('/default-week-bookings', async (req, res) => {
@@ -64,6 +70,31 @@ app.get('/default-week-bookings', async (req, res) => {
     const defaultWeekBookings = await getDefaultWeekBookings(req.header('email') as string);
     res.status(200);
     res.json({items: defaultWeekBookings});
+});
+
+app.get('/account-password', async (req, res) => {
+    if (!(await authenticateRequest(req, res))) {
+        return;
+    }
+
+    const password = await getRecPassword(req.header('email') as string);
+
+    res.status(200);
+    res.json({ password });
+});
+
+app.post('/account-password', async (req, res) => {
+    if (!(await authenticateRequest(req, res))) {
+        return;
+    }
+
+    const body = req.body as { password: string };
+
+    if (!body.password) {
+        res.sendStatus(400);
+    }
+    await setRecPassword(req.header('email') as string, body.password);
+    res.sendStatus(200);
 });
 
 const root = path.dirname(fileURLToPath(import.meta.url));

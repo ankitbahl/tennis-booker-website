@@ -1,8 +1,9 @@
 import React from 'react';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import Login from "./Login.js";
-import Home from "./Home.js";
-import LoginRedirect from "./LoginRedirect.js";
+import Login from "./containers/Login";
+import Home from "./containers/Home";
+import Settings from "./containers/Settings";
+import LoginRedirect from "./containers/LoginRedirect";
 
 function App() {
 
@@ -12,6 +13,7 @@ function App() {
         <Route path="/login" element={<Login />}/>
         <Route path="/login-redirect" element={<LoginRedirect />}/>
         <Route path="/home" element={<Home />}/>
+        <Route path="/settings" element={<Settings />}/>
       </Routes>
     </BrowserRouter>
   );
