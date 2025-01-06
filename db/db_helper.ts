@@ -38,9 +38,7 @@ export class DBHelper {
 
 export const getDefaultWeekBookings = async (email: string): Promise<{day: string, time: string, court: string}[]> => {
   const defaultWeekBookingsString = await DBHelper.redisClient.get('default_week_bookings');
-  if (defaultWeekBookingsString) {
-    return JSON.parse(defaultWeekBookingsString)[email];
-  } else {
+  if (!defaultWeekBookingsString || !JSON.parse(defaultWeekBookingsString)[email]) {
     const defaultWeekBookings = ['tuesday', 'thursday', 'sunday'].map(day => ({
       day: day as Weekday,
       time: '4:00 PM',
@@ -48,6 +46,8 @@ export const getDefaultWeekBookings = async (email: string): Promise<{day: strin
     }));
     await setDefaultWeekBookings(email, defaultWeekBookings);
     return defaultWeekBookings;
+  } else {
+    return JSON.parse(defaultWeekBookingsString)[email];
   }
 };
 
