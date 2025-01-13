@@ -1,19 +1,19 @@
-import {useEffect, useState} from "react";
-import {AxiosHelper} from "../helpers/axiosHelper";
+import { useState } from "react";
+import { AxiosHelper } from "../helpers/axiosHelper";
 
 const useSettings = () => {
-    const [password, setPassword] = useState('');
+    const [settings, setSettings] = useState({ password: '', recEmail: '' });
 
-    const getPassword = async () => {
-        const out = await AxiosHelper.getWithAxios('/account-password');
-        setPassword(out.data.password);
+    const getSettings = async () => {
+        const out = await AxiosHelper.getWithAxios('/account-settings');
+        setSettings({ password: out.data.password, recEmail: out.data.recEmail });
     };
 
-    const postPassword = async (password: string) => {
-        await AxiosHelper.postWithAxios('/account-password', { password });
+    const saveSettings = async (password: string, recEmail: string) => {
+        await AxiosHelper.postWithAxios('/account-settings', { password, recEmail });
     };
 
-    return { password, getPassword, postPassword }
+    return { settings, getSettings, saveSettings }
 }
 
 export default useSettings;

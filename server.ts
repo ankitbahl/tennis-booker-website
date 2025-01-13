@@ -6,9 +6,9 @@ import {authenticate, login} from "./server/login-helper.js";
 import {
     DBHelper,
     getDefaultWeekBookings,
-    getRecPassword,
+    getRecPassword, getRecEmail,
     setDefaultWeekBookings,
-    setRecPassword
+    setRecPassword, setRecEmail
 } from "./db/db_helper.js";
 import {validateDefaultBookings} from "./server/param_validator.js";
 import {Weekday} from "./server/definitions.js";
@@ -72,28 +72,30 @@ app.get('/default-week-bookings', async (req, res) => {
     res.json({items: defaultWeekBookings});
 });
 
-app.get('/account-password', async (req, res) => {
+app.get('/account-settings', async (req, res) => {
     if (!(await authenticateRequest(req, res))) {
         return;
     }
 
     const password = await getRecPassword(req.header('email') as string);
+    const recEmail = await getRecEmail(req.header('email') as string);
 
     res.status(200);
-    res.json({ password });
+    res.json({ password, recEmail });
 });
 
-app.post('/account-password', async (req, res) => {
+app.post('/account-settings', async (req, res) => {
     if (!(await authenticateRequest(req, res))) {
         return;
     }
 
-    const body = req.body as { password: string };
+    const body = req.body as { password: string, recEmail: string };
 
-    if (!body.password) {
+    if (!body.password || !body.recEmail) {
         res.sendStatus(400);
     }
     await setRecPassword(req.header('email') as string, body.password);
+    await setRecEmail(req.header('email') as string, body.recEmail);
     res.sendStatus(200);
 });
 

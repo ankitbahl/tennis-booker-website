@@ -9,10 +9,10 @@ const Settings = () => {
 
     const [user, setUser] = useState({ token: '', email: '' });
 
-    const { password, postPassword, getPassword } = useSettings();
+    const { settings, saveSettings, getSettings } = useSettings();
     useEffect(() => {
         getAndSetUserFromStorage();
-        getPassword();
+        getSettings();
     }, []);
 
     const getAndSetUserFromStorage = () => {
@@ -24,7 +24,7 @@ const Settings = () => {
         }
     }
     return <div>
-        <SettingsContent user={user} password={password} setPassword={postPassword}/>
+        <SettingsContent user={user} password={settings.password} recEmail={settings.recEmail} saveSettings={saveSettings}/>
     </div>
 };
 

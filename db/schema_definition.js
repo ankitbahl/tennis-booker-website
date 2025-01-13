@@ -35,6 +35,7 @@ let schema = {
   },
 
   // rec us password
-  "user@gmail.com_rec_password": "123456"
+  "user@gmail.com_rec_password": "123456",
+  "user@gmail.com_rec_email": "notification@gmail.com"
 
 }

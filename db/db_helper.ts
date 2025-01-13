@@ -73,8 +73,16 @@ export const getRecPassword = async (email: string): Promise<string | null> => {
   return DBHelper.redisClient.get(`${email}_rec_password`);
 }
 
+export const getRecEmail = async (email: string): Promise<string | null> => {
+  return DBHelper.redisClient.get(`${email}_rec_email`);
+}
+
 export const setRecPassword = async (email: string, password: string)=> {
   await DBHelper.redisClient.set(`${email}_rec_password`, password);
+}
+
+export const setRecEmail = async (email: string, recEmail: string)=> {
+  await DBHelper.redisClient.set(`${email}_rec_email`, recEmail);
 }
 // const validateBookingArgs = (date: string, time: string, court: string): boolean => {
 //   const parsedDate = new Date(date);
